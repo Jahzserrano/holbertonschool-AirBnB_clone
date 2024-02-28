@@ -13,7 +13,7 @@ class BaseModel:
         updated_at: assign with the current datetime when an instance is created and it will be updated every time you change your object
     """
     
-    id = uuid4()
+    id = str(uuid4())
     created_at = datetime.utcnow()
     updated_at = datetime.utcnow()
     
