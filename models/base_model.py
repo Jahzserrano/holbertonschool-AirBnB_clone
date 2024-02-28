@@ -3,7 +3,12 @@
 import models
 from datetime import datetime
 from uuid import uuid4
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column
+from sqlalchemy import DateTime
+from sqlalchemy import String
 
+Base = declarative_base()
 
 class BaseModel:
     """BaseModel Class
@@ -16,6 +21,9 @@ class BaseModel:
         instance is created and it will be updated every time you change
         your object
     """
+    id = Column(String(60), primary_key=True, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
 
     def __init__(self, *args, **kwargs):
         """BaseModel Constructor.
