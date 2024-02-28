@@ -37,12 +37,76 @@ class HBNBCommand(cmd.Cmd):
         new_instance = BaseModel()
         new_instance.save()
         print(new_instance.id)
-    
-    def show(self, arg):
+
+    def do_show(self, arg):
         """Prints the string representation of an instance"""
         if not arg:
-            print("** class name missing **") 
+            print("** class name missing **")
+            return
+        if arg not in ["BaseModel"]:
+            print("** class doesn't exist **")
+            return
+        if len(arg) < 2:
+            print("** instance id missing **")
+            return
+        instance_id = arg[1]
+        try:
+            instance = BaseModel.get(instance_id)
+            print(instance)
+        except KeyError:
+            print("** no instance found **")
 
+    def do_destroy(self, arg):
+        """Deletes an instance based on the name class and id"""
+        if not arg:
+            print("** class name missing **")
+            return
+        if arg not in ["BaseModel"]:
+            print("** class doesn't exist **")
+            return
+        if len(arg) < 2:
+            print("** instance id missing **")
+            return
+        instance_id = arg[1]
+        try:
+            instance = BaseModel.get(instance_id)
+            instance.delete()
+            BaseModel.save()
+            print(instance)
+        except KeyError:
+            print("** no instance found **")
+
+    def do_all(self, arg):
+        """Prints all the string representation of all instances"""
+        if arg not in ["BaseModel"]:
+            print("** class doesn't exist **")
+            return
+        instances = BaseModel.all()
+        print([str(instances) for instance in instances])
+
+    def do_update(self, arg):
+        """Updates an instance"""
+        if not arg:
+            print("** class name missing **")
+            return
+        if arg not in ["BaseModel"]:
+            print("** class doesn't exist **")
+            return
+        if len(arg) < 2:
+            print("** instance id missing **")
+            return
+        instance_id = arg[1]
+        try:
+            instance = BaseModel.get(instance_id)
+            if len(arg) < 4:
+                print("** attributr name missing **")
+                return
+            attr_name = arg[2]
+            attr_value = arg[3]
+            settattr(instance, attr_name, attr_value)
+            instance.save()
+        except KeyError:
+            print("** no instance found **")
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
