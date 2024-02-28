@@ -31,7 +31,7 @@ class HBNBCommand(cmd.Cmd):
         if not arg:
             print("** class name missing **")
             return
-        if arg not in ["BaseModel"]:
+        if arg not in self.valid_classes:
             print("** class doesn't exist **")
             return
         new_instance = BaseModel()
@@ -40,16 +40,17 @@ class HBNBCommand(cmd.Cmd):
 
     def do_show(self, arg):
         """Prints the string representation of an instance"""
-        if not arg:
+        args = arg.split()
+        if len(args) < 1:
             print("** class name missing **")
             return
-        if arg not in ["BaseModel"]:
+        if args[0] not in self.valid_classes:
             print("** class doesn't exist **")
             return
-        if len(arg) < 2:
+        if len(args) < 2:
             print("** instance id missing **")
             return
-        instance_id = arg[1]
+        instance_id = args[1]
         try:
             instance = BaseModel.get(instance_id)
             print(instance)
@@ -58,16 +59,17 @@ class HBNBCommand(cmd.Cmd):
 
     def do_destroy(self, arg):
         """Deletes an instance based on the name class and id"""
-        if not arg:
+        args = arg.split()
+        if len(args) < 1:
             print("** class name missing **")
             return
-        if arg not in ["BaseModel"]:
+        if args[0] not in self.valid_classes:
             print("** class doesn't exist **")
             return
-        if len(arg) < 2:
+        if len(args) < 2:
             print("** instance id missing **")
             return
-        instance_id = arg[1]
+        instance_id = args[1]
         try:
             instance = BaseModel.get(instance_id)
             instance.delete()
@@ -78,32 +80,33 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, arg):
         """Prints all the string representation of all instances"""
-        if arg not in ["BaseModel"]:
+        if arg and arg not in self.valid_classes:
             print("** class doesn't exist **")
             return
         instances = BaseModel.all()
-        print([str(instances) for instance in instances])
+        print([str(instance) for instance in instances])
 
     def do_update(self, arg):
         """Updates an instance"""
-        if not arg:
+        args = arg.split()
+        if len(args) < 1:
             print("** class name missing **")
             return
-        if arg not in ["BaseModel"]:
+        if args[0] not in self.valid_classes:
             print("** class doesn't exist **")
             return
-        if len(arg) < 2:
+        if len(args) < 2:
             print("** instance id missing **")
             return
-        instance_id = arg[1]
+        instance_id = args[1]
         try:
             instance = BaseModel.get(instance_id)
-            if len(arg) < 4:
-                print("** attributr name missing **")
+            if len(args) < 4:
+                print("** attribute name missing **")
                 return
-            attr_name = arg[2]
-            attr_value = arg[3]
-            settattr(instance, attr_name, attr_value)
+            attr_name = args[2]
+            attr_value = args[3]
+            setattr(instance, attr_name, attr_value)
             instance.save()
         except KeyError:
             print("** no instance found **")
