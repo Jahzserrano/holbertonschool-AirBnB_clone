@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """Defines the BaseModel Class."""
+import models
 from datetime import datetime
 from uuid import uuid4
 
@@ -17,7 +18,7 @@ class BaseModel:
         """BaseModel Constructor.
         
         Args:
-            *args (any): Unused.
+            *args (any): wont be used.
             **kwargs (dict): Pairs attributes
         """
         id = str(uuid4())
@@ -34,6 +35,8 @@ class BaseModel:
     def save(self):
         """Update updat_at with currrent datetime."""
         self.updated_at = datetime.utcnow()
+        models.storage.new(self)
+        models.storage.save()
     
     def to_dict(self):
         """Return the dict Representasion of the Class."""
