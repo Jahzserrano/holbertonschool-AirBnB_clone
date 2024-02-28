@@ -10,13 +10,16 @@ class BaseModel:
 
     Attributes:
         id (String): BaseModel id
-        created_at (DateTime): assign with the current datetime when an instance is created.
-        updated_at (DateTime): assign with the current datetime when an instance is created and it will be updated every time you change your object
+        created_at (DateTime): assign with the current datetime
+        when an instance is created.
+        updated_at (DateTime): assign with the current datetime when an
+        instance is created and it will be updated every time you change
+        your object
     """
-    
+
     def __init__(self, *args, **kwargs):
         """BaseModel Constructor.
-        
+
         Args:
             *args (any): wont be used.
             **kwargs (dict): Pairs attributes
@@ -24,20 +27,20 @@ class BaseModel:
         id = str(uuid4())
         created_at = datetime.utcnow()
         updated_at = datetime.utcnow()
-        
+
         if kwargs:
             for key, value in kwargs.items():
                 if key == "created_at" or key == "updated_at":
                     value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
                 if key != "__class__":
                     setattr(self, key, value)
-    
+
     def save(self):
         """Update updat_at with currrent datetime."""
         self.updated_at = datetime.utcnow()
         models.storage.new(self)
         models.storage.save()
-    
+
     def to_dict(self):
         """Return the dict Representasion of the Class."""
         dict_r = self.__dict__.copy()
