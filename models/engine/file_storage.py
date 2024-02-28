@@ -8,18 +8,18 @@ class FileStorage:
     """Represent an abstracted storage engine.
 
     Attributes:
-        __file_path (str): The name of the file to save objects to.
-        __objects (dict): A dictionary of instantiated objects.
+        __file_path (str): The filename
+        __objects (dict): A dictionary  of the obj
     """
 
     __file_path = "file.json"
     __objects = {}
 
     def all(self, cls=None):
-        """Return a dictionary of instantiated objects in __objects.
+        """Return a dictionary.
 
-        If a cls is specified, returns a dictionary of objects of that type.
-        Otherwise, returns the __objects dictionary.
+        If -> a cls is specified: returns a dictionary of objects of that type.
+        eles -> returns the __objects dictionary.
         """
         if cls is not None:
             if type(cls) == str:
@@ -42,7 +42,9 @@ class FileStorage:
             json.dump(odict, f)
 
     def reload(self):
-        """Deserialize the JSON file __file_path to __objects, if it exists."""
+        """Deserialize the JSON file __file_path to __objects, if it exists.
+        otherwise, do nothing. If the file doesn’t exist, no exception should be raised)
+        """
         try:
             with open(self.__file_path, "r", encoding="utf-8") as f:
                 for o in json.load(f).values():
@@ -51,14 +53,3 @@ class FileStorage:
                     self.new(eval(name)(**o))
         except FileNotFoundError:
             pass
-
-    def delete(self, obj=None):
-        """Delete a given object from __objects, if it exists."""
-        try:
-            del self.__objects["{}.{}".format(type(obj).__name__, obj.id)]
-        except (AttributeError, KeyError):
-            pass
-
-    def close(self):
-        """Call the reload method."""
-        self.reload()
