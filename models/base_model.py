@@ -47,7 +47,13 @@ class BaseModel:
         dict_r.pop("_sa_instance_state", None)
         return dict_r
     
+    def delete(self):
+        """Delete the current instance from storage."""
+        models.storage.delete(self)
+        
     def __str__(self):
         """Return the str representation of the BaseModel."""
-        return f"[{type(self).__name__}] ({self.id}) {self.to_dict()}"
+        d = self.__dict__.copy()
+        d.pop("_sa_instance_state", None)
+        return "[{}] ({}) {}".format(type(self).__name__, self.id, d)
     
