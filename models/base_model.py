@@ -8,9 +8,9 @@ class BaseModel:
     """BaseModel Class
 
     Attributes:
-        id: BaseModel id
-        created_at: assign with the current datetime when an instance is created.
-        updated_at: assign with the current datetime when an instance is created and it will be updated every time you change your object
+        id (String): BaseModel id
+        created_at (DateTime): assign with the current datetime when an instance is created.
+        updated_at (DateTime): assign with the current datetime when an instance is created and it will be updated every time you change your object
     """
     
     id = str(uuid4())
@@ -35,5 +35,5 @@ class BaseModel:
         """Return the str representation of the BaseModel"""
         dic = self.__dict__.copy()
         dic.pop("_sa_instance_state", None)
-        return "[{}] ({}) {}".format(type(self).__name__, self.id, dic)
+        return f"[{type(self).__name__}] ({self.id}) {dic}"
     
