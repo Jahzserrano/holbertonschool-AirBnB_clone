@@ -13,17 +13,18 @@ class BaseModel:
         updated_at (DateTime): assign with the current datetime when an instance is created and it will be updated every time you change your object
     """
     
-    id = str(uuid4())
-    created_at = datetime.utcnow()
-    updated_at = datetime.utcnow()
-    
+    def __init__(self):
+        """BaseModel Constructor."""
+        id = str(uuid4())
+        created_at = datetime.utcnow()
+        updated_at = datetime.utcnow()
     
     def save(self):
-        """Update updat_at"""
+        """Update updat_at with currrent datetime."""
         self.updated_at = datetime.utcnow()
     
     def to_dict(self):
-        """Return the dict Representasion of the Class"""
+        """Return the dict Representasion of the Class."""
         dict_r = self.__dict__.copy()
         dict_r["__class__"] = str(type(self).__name__)
         dict_r["created_at"] = self.created_at.isoformat()
@@ -32,8 +33,6 @@ class BaseModel:
         return dict_r
     
     def __str__(self):
-        """Return the str representation of the BaseModel"""
-        dic = self.__dict__.copy()
-        dic.pop("_sa_instance_state", None)
-        return f"[{type(self).__name__}] ({self.id}) {dic}"
+        """Return the str representation of the BaseModel."""
+        return f"[{type(self).__name__}] ({self.id}) {self.to_dict()}"
     
