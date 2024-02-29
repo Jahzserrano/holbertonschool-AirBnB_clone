@@ -3,12 +3,16 @@
 import cmd
 import json
 
-from numpy import save
+from models import storage
 from models.base_model import BaseModel
 
 
 class HBNBCommand(cmd.Cmd):
     """Custom command interpreter for HBNB project."""
+
+    __classes = {
+        "BaseModel": BaseModel
+        }
 
     prompt = "(hbnb) "
     valid_classes = ["BaseModel"]
@@ -51,10 +55,11 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
             return
         instance_id = args[1]
-        try:
-            instance = BaseModel.get(instance_id)
-            print(instance)
-        except KeyError:
+        all_instances = storage.all(args[0])
+        instance_key = "{}.{}".format(args[0], instance_id)
+        if instance_key in all_instances:
+            print(all_instances[instance_key])
+        else:
             print("** no instance found **")
 
     def do_destroy(self, arg):
@@ -69,22 +74,27 @@ class HBNBCommand(cmd.Cmd):
         if len(args) < 2:
             print("** instance id missing **")
             return
+
         instance_id = args[1]
-        try:
-            instance = BaseModel.get(instance_id)
-            instance.delete()
-            BaseModel.save()
-            print(instance)
-        except KeyError:
+        all_instances = storage.all(args[0])
+        instance_key = "{}.{}".format(args[0], instance_id)
+        if instance_key in all_instances:
+            print(all_instances[instance_key])
+        else:
             print("** no instance found **")
 
     def do_all(self, arg):
         """Prints all the string representation of all instances"""
-        if arg and arg not in self.valid_classes:
+        objdict = storage.all()
+        args = arg.split()
+        if len(args) == 0:
+            print("** class name missing **")
+        elif args[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
-            return
-        instances = BaseModel.all()
-        print([str(instance) for instance in instances])
+        else:
+            instances = [str(obj) for key, obj in objdict.items()
+                         if key.split('.')[0] == args[0]]
+            print(instances)
 
     def do_update(self, arg):
         """Updates an instance"""
@@ -99,16 +109,17 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
             return
         instance_id = args[1]
-        try:
-            instance = BaseModel.get(instance_id)
+        all_instances = storage.all(args[0])
+        instance_key = "{}.{}".format(args[0], instance_id)
+        if instance_key in all_instances:
             if len(args) < 4:
                 print("** attribute name missing **")
                 return
             attr_name = args[2]
             attr_value = args[3]
-            setattr(instance, attr_name, attr_value)
-            instance.save()
-        except KeyError:
+            setattr(all_instances[instance_key], attr_name, attr_value)
+            all_instances[instance_key].save()
+        else:
             print("** no instance found **")
 
 if __name__ == "__main__":
